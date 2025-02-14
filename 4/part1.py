@@ -1,31 +1,42 @@
-def checkNeighbours(puzzle, a, b, checkValue):
-    for i in [-1, 0, 1]:
-        for j in [-1, 0, 1]:
-            if i == 0 and j == 0:
-                continue
-            if (a+i < 0 or b+j <0) or (a+i > len(puzzle)-1 or b+j > len(puzzle)-1):
-                continue
-            print(f'Checking at {a+i}, {b+j}')
-
-            currentValue = puzzle[a+i][b+j]
-            if currentValue == checkValue:
-                return True
-
-with open("./4/data/testdata.txt") as file:
+with open("./4/data/data.txt") as file:
     input = [line.rstrip() for line in file]
 
-import numpy as np
+directions = [
+    (0, 1),
+    (1, 1),
+    (1, 0),
+    (1, -1),
+    (0, -1),
+    (-1, 0),
+    (-1, -1),
+    (-1, 1),
+]
 
-n = len(input)
+boardsize = len(input)
+board = {}
+result = 0
 
-puzzle = np.empty((n, n), dtype=str)
+for i, line in enumerate(input):
+    for j, letter in enumerate(line):
+        board[(i, j)] = letter
+    
+for letter in board:
+    if board[letter] == "X":
+        # print(f'yipee! X @ {letter}')
 
-for i in range(0, n):
-    for j in range(0, n):
-        puzzle[i][j] = input[i][j]
-
-for i in range(0, n):
-    for j in range(0, n): 
-        if puzzle[i][j] == "X":
-            print(f'Here\'s an X! @ {i} ; {j}')
-            checkNeighbours(puzzle, i, j, "M")
+        for direction in directions:
+            letter2 = (letter[0] + direction[0], letter[1] + direction[1])
+            if letter2 in board.keys():
+                if board[letter2] == "M":
+                    # print(f'M @ {letter2}, continuing in {direction}')
+                    letter3 = (letter2[0] + direction[0], letter2[1] + direction[1])
+                    if letter3 in board.keys():
+                        if board[letter3] == "A":
+                            # print(f'A @ {letter3}')
+                            letter4 = (letter3[0] + direction[0], letter3[1] + direction[1])
+                            if letter4 in board.keys():
+                                if board[letter4] == "S":
+                                    result += 1
+                                    # print(f'yippeedoodle! full XMAS @ {letter}')
+                        
+print(f'Result: {result}')
