@@ -87,11 +87,12 @@ class Player():
     
 board = Board(len(input))
 board.populateBoard()
-board.changeCellValue([1, 1], "p")
 
 for i, row in enumerate(input):
     for j, cell in enumerate(row):
         board.changeCellValue([i, j], input[i][j])
+
+board.changeCellValue([4, 5], "p")
 
 for i, row in enumerate(input):
     for j, cell in enumerate(row):
@@ -100,24 +101,26 @@ for i, row in enumerate(input):
 
 i = 0
 
-while not player.checkIfClear(board) == "outOfBounds":
+while not player.checkIfClear(board) == "outOfBounds" and i < 50:
     i += 1
-
+    print(player.lookRight(board))    
     if player.lookRight(board) == "X":
-
-    if player.checkIfClear(board) in [".", "X"]:
+        board.changeCellValue(player.position, "O")
+    if player.checkIfClear(board) in [".", "X", "O"]:
         player.move(board)
     elif player.checkIfClear(board) == False:
         player.rotate()
+        player.move(board)
+
     
-    if i % 2000 == 0:
+    if i % 50 == 0:
         board.printBoard()
 
     result = 0
 
 for row in range(0, board.size):
     for col in range(0, board.size):
-        if board.board[row, col].getValue() == "X":
+        if board.board[row, col].getValue() in ["X", "O"]:
             result +=1
 
 print(result+1)
